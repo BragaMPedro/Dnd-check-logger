@@ -8,6 +8,7 @@ import { StatSelector } from "../StatSelector/StatSelector";
 
 export const Form = () => {
    let selectedEmpty = { nome: "", descricao: [] };
+   const [loading, setLoading] = useState<boolean>(false);
    const [ability, setAbility] = useState<string[]>([]);
    const [selectedAbility, setSelectedAbility] = useState<SelectedAbilityProps>(selectedEmpty);
    const [skills, setSkills] = useState<string[]>([]);
@@ -20,12 +21,19 @@ export const Form = () => {
    }, []);
 
    async function getHabilidades() {
-      const abilityArray = (await getAbilityScores()).data;
+      setLoading(true);
+      try {
+         const abilityArray = (await getAbilityScores()).data;
 
-      let habilidades = abilityArray.results.map(stat => {
-         return stat.name;
-      });
-      setAbility(habilidades);
+         let habilidades = abilityArray.results.map(stat => {
+            return stat.name;
+         });
+         setAbility(habilidades);
+      } catch (error) {
+         console.error(error);
+      };
+
+      setTimeout(()=>setLoading(false),3000)
    }
 
    async function handleAbilitySelect(e: string) {
@@ -38,12 +46,7 @@ export const Form = () => {
          return skill.name;
       });
 
-      e === "con" ? (
-         setSavingThrow(true),
-         setDisableCheckbox(true)
-      ) : (
-         setDisableCheckbox(false)
-      )
+      e === "con" ? (setSavingThrow(true), setDisableCheckbox(true)) : setDisableCheckbox(false);
       setSkills(skills);
       setSelectedSkill(selectedEmpty);
    }
@@ -64,61 +67,72 @@ export const Form = () => {
       const skill = formData.get("skill");
       const savingThrow = Boolean(formData.get("saving-throw"));
 
+      console.table(Array.from(formData.entries()));
    }
 
-   return (
-      <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-12 max-w-2xl">
-         <section className="space-y-8">
-            <label htmlFor="ability-selector" className="text-lg">
-               Selecione uma habilidade:
-            </label>
-            <div
-               id="ability-selector-container"
-               className="grid grid-rows-3 grid-cols-2 gap-8 mb-12 sm:my-4 sm:grid-rows-1 sm:grid-cols-6">
-               {ability.map((stat, index) => {
-                  return <StatSelector key={index} value={stat} setValue={handleAbilitySelect} />;
-               })}
-            </div>
-            <div className="flex gap-4 items-center">
-               <label htmlFor="saving-throw" className="text-lg">
-                  Saving Throw:
-               </label>
-               <input
-                  id="saving-throw"
-                  name="saving-throw"
-                  type="checkbox"
-                  checked={savingThrow}
-                  disabled={disableCheckbox}
-                  className="toggle toggle-info"
-                  onChange={() => setSavingThrow(state => !state)}
-               />
-            </div>
-            <Descricao content={selectedAbility} />
-         </section>
-         {!savingThrow && skills.length > 0 && (
-            <section id="skill" className="space-y-8">
-               <label htmlFor="skill-selector" className="text-lg">
-                  Selecione uma perícia:
-               </label>
-               <br />
-               <select
-                  id="skill-selector"
-                  name="skill"
-                  className="select select-info w-full max-w-xs"
-                  onChange={e => handleSkillSelect(e.target.value)}>
-                  {skills.map((skill, index) => {
-                     return <option key={index}>{skill}</option>;
-                  })}
-               </select>
-               <Descricao content={selectedSkill} />
-            </section>
-         )}
-
-         <div id="btn-container" className="w-full flex justify-end">
-            <button type="submit" className="btn btn-accent">
-               Salvar
-            </button>
+   if (loading) {
+      return (
+         <div className="container mt-8 w-full h-screen space-y-12 max-w-2xl flex flex-col items-center justify-center">
+            <h2 className="text-4xl text-center" >Super Duper <br/> DnD Check Logger</h2>
+            <span className="loading loading-infinity loading-lg text-info"></span>
          </div>
-      </form>
-   );
+      );
+   } else {
+      return (
+         <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-12 max-w-2xl">
+            <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal" >Super Duper DnD Check Logger</h2>
+            <section className="space-y-8">
+               <label htmlFor="ability-selector" className="text-lg">
+                  Selecione uma habilidade:
+               </label>
+               <div
+                  id="ability-selector-container"
+                  className="grid grid-rows-3 grid-cols-2 gap-8 mb-12 sm:my-4 sm:grid-rows-1 sm:grid-cols-6">
+                  {ability.map((stat, index) => {
+                     return <StatSelector key={index} value={stat} setValue={handleAbilitySelect} />;
+                  })}
+               </div>
+               <div className="flex gap-4 items-center">
+                  <label htmlFor="saving-throw" className="text-lg">
+                     Saving Throw:
+                  </label>
+                  <input
+                     id="saving-throw"
+                     name="saving-throw"
+                     type="checkbox"
+                     checked={savingThrow}
+                     disabled={disableCheckbox}
+                     className="toggle toggle-info"
+                     onChange={() => setSavingThrow(state => !state)}
+                  />
+               </div>
+               <Descricao content={selectedAbility} />
+            </section>
+            {!savingThrow && skills.length > 0 && (
+               <section id="skill" className="space-y-8">
+                  <label htmlFor="skill-selector" className="text-lg">
+                     Selecione uma perícia:
+                  </label>
+                  <br />
+                  <select
+                     id="skill-selector"
+                     name="skill"
+                     className="select select-info w-full max-w-xs"
+                     onChange={e => handleSkillSelect(e.target.value)}>
+                     {skills.map((skill, index) => {
+                        return <option key={index}>{skill}</option>;
+                     })}
+                  </select>
+                  <Descricao content={selectedSkill} />
+               </section>
+            )}
+
+            <div id="btn-container" className="w-full flex justify-end">
+               <button type="submit" className="btn btn-accent">
+                  Salvar
+               </button>
+            </div>
+         </form>
+      );
+   }
 };
