@@ -1,4 +1,8 @@
-import { AbilityScoreDetailsResponse, AbilityScoresResponse, SkillDetailsResponse } from '@/types/AbilityScore';
+import {
+    AbilityScoreDetailsResponse,
+    AbilityScoresResponse,
+    SkillDetailsResponse
+} from '@/types/AbilityScore';
 import axios, { AxiosResponse } from 'axios';
 
 const DndApi = axios.create({
