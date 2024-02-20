@@ -3,6 +3,7 @@
 import { getAbilityScores, getAbilityScoresById, getSkillById } from "@/services/dndApi";
 import { SelectedAbilityProps } from "@/types/AbilityScore";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 import { StatSelector } from "../StatSelector/StatSelector";
 
 export const Form = () => {
@@ -99,7 +100,7 @@ export const Form = () => {
       );
    } else {
       return (
-         <form onSubmit={handleSubmit} onReset={limparStates} className="container mt-8 w-full space-y-12 max-w-2xl">
+         <form onSubmit={handleSubmit} onReset={limparStates} className="container mt-8 w-full space-y-12 max-w-2xl overflow-hidden scroll-smooth">
             <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
             <section className="space-y-8">
                <label htmlFor="ability-selector" className="text-lg">
@@ -127,14 +128,7 @@ export const Form = () => {
                   />
                </div>
                {selectedAbility && (
-                  <div className="collapse collapse-arrow bg-[#00b5ff30]">
-                     <input type="checkbox" name="details-collapsable" />
-                     <div className="collapse-title text-lg font-medium">{selectedAbility.nome + " Details"}</div>
-                     <div className="collapse-content text-sm space-y-2">
-                        <p>{selectedAbility.descricao[0]}</p>
-                        <p>{selectedAbility.descricao[1]}</p>
-                     </div>
-                  </div>
+                  <DescricaoColapsable content={selectedAbility} />
                )}
             </section>
             {!savingThrow && skills.length > 0 && (
@@ -156,14 +150,7 @@ export const Form = () => {
                      })}
                   </select>
                   {selectedSkill && (
-                     <div className="collapse collapse-arrow bg-[#00b5ff30]">
-                        <input type="checkbox" name="details-collapsable" />
-                        <div className="collapse-title text-lg font-medium">{selectedSkill.nome + " Details"}</div>
-                        <div className="collapse-content text-sm space-y-2">
-                           <p>{selectedSkill.descricao[0]}</p>
-                           <p>{selectedSkill.descricao[1]}</p>
-                        </div>
-                     </div>
+                     <DescricaoColapsable content={selectedSkill} />
                   )}
                </section>
             )}
