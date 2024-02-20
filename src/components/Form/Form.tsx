@@ -4,6 +4,7 @@ import { getAbilityScores, getAbilityScoresById, getSkillById } from "@/services
 import { SelectedAbilityProps } from "@/types/AbilityScore";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
+import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { StatSelector } from "../StatSelector/StatSelector";
 
 export const Form = () => {
@@ -90,17 +91,11 @@ export const Form = () => {
    }
 
    if (loading) {
-      return (
-         <div className="container mt-8 w-full h-screen space-y-12 max-w-2xl flex flex-col items-center justify-center">
-            <h2 className="text-4xl text-center">
-               Super Duper <br /> DnD Check Logger
-            </h2>
-            <span className="loading loading-infinity loading-lg text-info"></span>
-         </div>
-      );
+      return <LoadingScreen />
    } else {
+
       return (
-         <form onSubmit={handleSubmit} onReset={limparStates} className="container mt-8 w-full space-y-12 max-w-2xl overflow-hidden scroll-smooth">
+         <form onSubmit={handleSubmit} onReset={limparStates} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
             <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
             <section className="space-y-8">
                <label htmlFor="ability-selector" className="text-lg">
@@ -131,6 +126,7 @@ export const Form = () => {
                   <DescricaoColapsable content={selectedAbility} />
                )}
             </section>
+            <div className="divider"></div>
             {!savingThrow && skills.length > 0 && (
                <section id="skill" className="space-y-8">
                   <label htmlFor="skill-selector" className="text-lg">
