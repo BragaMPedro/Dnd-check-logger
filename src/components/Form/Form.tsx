@@ -11,7 +11,7 @@ export const Form = () => {
    const [loading, setLoading] = useState<boolean>(false);
    const [ability, setAbility] = useState<string[]>([]);
    const [skills, setSkills] = useState<string[]>([]);
-   const [savingThrow, setSavingThrow] = useState<boolean>(true);
+   const [savingThrow, setSavingThrow] = useState<boolean>(false);
 
    const [selectedAbility, setSelectedAbility] = useState<SelectedAbilityProps | undefined>();
    const [selectedSkill, setSelectedSkill] = useState<SelectedAbilityProps | undefined>();
@@ -32,12 +32,12 @@ export const Form = () => {
       }
    }
 
-   function limparStates(){
-      setSkills([])
-      setSavingThrow(true)
-      setSelectedAbility(undefined)
-      setSelectedSkill(undefined)
-      setDisableCheckbox(false)
+   function limparStates() {
+      setSkills([]);
+      setSavingThrow(true);
+      setSelectedAbility(undefined);
+      setSelectedSkill(undefined);
+      setDisableCheckbox(false);
    }
 
    async function getHabilidades() {
@@ -85,17 +85,19 @@ export const Form = () => {
       const formData = new FormData(e.currentTarget);
       const ability = formData.get("ability");
       const skill = formData.get("skill");
-      const savingThrow = Boolean(formData.get("saving-throw"));      
+      const savingThrow = Boolean(formData.get("saving-throw"));
 
       console.table(Array.from(formData.entries()));
    }
 
    if (loading) {
-      return <LoadingScreen />
+      return <LoadingScreen />;
    } else {
-
       return (
-         <form onSubmit={handleSubmit} onReset={limparStates} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
+         <form
+            onSubmit={handleSubmit}
+            onReset={limparStates}
+            className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
             <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
             <section className="space-y-8">
                <label htmlFor="ability-selector" className="text-lg">
@@ -122,33 +124,32 @@ export const Form = () => {
                      onChange={e => handleSavingThrowSwitch(e)}
                   />
                </div>
-               {selectedAbility && (
-                  <DescricaoColapsable content={selectedAbility} />
-               )}
+               {selectedAbility && <DescricaoColapsable content={selectedAbility} />}
             </section>
             <div className="divider"></div>
             {!savingThrow && skills.length > 0 && (
-               <section id="skill" className="space-y-8">
-                  <label htmlFor="skill-selector" className="text-lg">
-                     Selecione uma perícia:
-                  </label>
-                  <br />
-                  <select
-                     id="skill-selector"
-                     name="skill"
-                     required
-                     defaultValue={""}
-                     className="select select-info w-full max-w-xs"
-                     onChange={e => handleSkillSelect(e.target.value)}>
+               <>
+                  <section id="skill" className="space-y-8">
+                     <label htmlFor="skill-selector" className="text-lg">
+                        Selecione uma perícia:
+                     </label>
+                     <br />
+                     <select
+                        id="skill-selector"
+                        name="skill"
+                        required
+                        defaultValue={""}
+                        className="select select-info w-full max-w-xs"
+                        onChange={e => handleSkillSelect(e.target.value)}>
                         <option disabled></option>
-                     {skills.map((skill, index) => {
-                        return <option key={index}>{skill}</option>;
-                     })}
-                  </select>
-                  {selectedSkill && (
-                     <DescricaoColapsable content={selectedSkill} />
-                  )}
-               </section>
+                        {skills.map((skill, index) => {
+                           return <option key={index}>{skill}</option>;
+                        })}
+                     </select>
+                     {selectedSkill && <DescricaoColapsable content={selectedSkill} />}
+                  </section>
+                  <div className="divider"></div>
+               </>
             )}
 
             <div id="btn-container" className="w-full flex items-center justify-end space-x-4">
