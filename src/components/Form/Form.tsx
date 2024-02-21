@@ -1,37 +1,24 @@
 "use client";
 
-import { getAbilityScores, getAbilityScoresById } from "@/services/dndApi";
-import { SelectedAbilityProps } from "@/types/AbilityScore";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { getAbilityScores } from "@/services/dndApi";
+import { FormEvent, useEffect, useState } from "react";
 
-import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
+import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { SkillSelector } from "../SkillSelector/SkillSelector";
-import { StatSelector } from "../StatSelector/StatSelector";
 
 export const Form = () => {
    const [loading, setLoading] = useState<boolean>(false);
-   const [ability, setAbility] = useState<string[]>([]);
+   const [abilities, setAbilities] = useState<string[]>([]);
    const [skills, setSkills] = useState<string[]>([]);
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
 
-   const [selectedAbility, setSelectedAbility] = useState<SelectedAbilityProps | undefined>();
-   const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false)
-
-   const [disableCheckbox, setDisableCheckbox] = useState<boolean>(false);
+   const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
+   const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
 
    useEffect(() => {
       getHabilidades();
    }, []);
-
-   function handleSavingThrowSwitch(e: ChangeEvent<HTMLInputElement>) {
-      setSavingThrow(state => !state);
-      let currentSavingThrow = e.currentTarget;
-
-      if (!currentSavingThrow) {
-         setSkills([]);
-      }
-   }
 
    async function getHabilidades() {
       setLoading(true);
@@ -41,26 +28,12 @@ export const Form = () => {
          let habilidades = abilityArray.results.map(stat => {
             return stat.name;
          });
-         setAbility(habilidades);
+         setAbilities(habilidades);
       } catch (error) {
          console.error(error);
       }
 
       setTimeout(() => setLoading(false), 2200);
-   }
-
-   async function handleAbilitySelect(e: string) {
-      const abilityRes = (await getAbilityScoresById(e)).data;
-
-      let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
-      setSelectedAbility(ability);
-
-      let skills = abilityRes.skills.map(skill => {
-         return skill.name;
-      });
-
-      e === "con" ? (setSavingThrow(true), setDisableCheckbox(true)) : setDisableCheckbox(false);
-      setSkills(skills);
    }
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -78,37 +51,15 @@ export const Form = () => {
       return <LoadingScreen />;
    } else {
       return (
-         <form
-            onSubmit={handleSubmit}
-            className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
+         <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
             <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
-            <section className="space-y-8">
-               <label htmlFor="ability-selector" className="text-lg">
-                  Selecione uma habilidade:
-               </label>
-               <div
-                  id="ability-selector-container"
-                  className="grid grid-rows-3 grid-cols-2 gap-8 mb-12 sm:my-4 sm:grid-rows-1 sm:grid-cols-6">
-                  {ability.map((stat, index) => {
-                     return <StatSelector key={index} value={stat} setValue={handleAbilitySelect} />;
-                  })}
-               </div>
-               <div className="flex gap-4 items-center">
-                  <label htmlFor="saving-throw" className="text-lg">
-                     Saving Throw:
-                  </label>
-                  <input
-                     id="saving-throw"
-                     name="saving-throw"
-                     type="checkbox"
-                     checked={savingThrow}
-                     disabled={disableCheckbox}
-                     className="toggle toggle-info"
-                     onChange={e => handleSavingThrowSwitch(e)}
-                  />
-               </div>
-               {selectedAbility && <DescricaoColapsable content={selectedAbility} />}
-            </section>
+            <AbilitySelector
+               abilities={abilities}
+               savingThrow={savingThrow}
+               setSkills={setSkills}
+               setSavingThrow={setSavingThrow}
+               setIsAbilitySelected={setIsAbilitySelected}
+            />
             <div className="divider"></div>
             {!savingThrow && skills.length > 0 && (
                <>
@@ -126,7 +77,7 @@ export const Form = () => {
                      Salvar
                   </button>
                ) : (
-                  <button type="submit" disabled={!selectedAbility} className="btn btn-accent px-6">
+                  <button type="submit" disabled={!isAbilitySelected} className="btn btn-accent px-6">
                      Salvar
                   </button>
                )}
