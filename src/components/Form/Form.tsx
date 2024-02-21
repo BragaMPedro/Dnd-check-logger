@@ -1,10 +1,12 @@
 "use client";
 
-import { getAbilityScores, getAbilityScoresById, getSkillById } from "@/services/dndApi";
+import { getAbilityScores, getAbilityScoresById } from "@/services/dndApi";
 import { SelectedAbilityProps } from "@/types/AbilityScore";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
+import { SkillSelector } from "../SkillSelector/SkillSelector";
 import { StatSelector } from "../StatSelector/StatSelector";
 
 export const Form = () => {
@@ -14,7 +16,7 @@ export const Form = () => {
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
 
    const [selectedAbility, setSelectedAbility] = useState<SelectedAbilityProps | undefined>();
-   const [selectedSkill, setSelectedSkill] = useState<SelectedAbilityProps | undefined>();
+   const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false)
 
    const [disableCheckbox, setDisableCheckbox] = useState<boolean>(false);
 
@@ -28,16 +30,7 @@ export const Form = () => {
 
       if (!currentSavingThrow) {
          setSkills([]);
-         setSelectedSkill(undefined);
       }
-   }
-
-   function limparStates() {
-      setSkills([]);
-      setSavingThrow(true);
-      setSelectedAbility(undefined);
-      setSelectedSkill(undefined);
-      setDisableCheckbox(false);
    }
 
    async function getHabilidades() {
@@ -68,15 +61,6 @@ export const Form = () => {
 
       e === "con" ? (setSavingThrow(true), setDisableCheckbox(true)) : setDisableCheckbox(false);
       setSkills(skills);
-      setSelectedSkill(undefined);
-   }
-
-   async function handleSkillSelect(e: string) {
-      let formattedSkill = e.toLowerCase().replaceAll(" ", "-");
-      const skillRes = (await getSkillById(formattedSkill)).data;
-
-      let skill = { nome: skillRes.name, descricao: skillRes.desc };
-      setSelectedSkill(skill);
    }
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -96,7 +80,6 @@ export const Form = () => {
       return (
          <form
             onSubmit={handleSubmit}
-            onReset={limparStates}
             className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
             <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
             <section className="space-y-8">
@@ -129,25 +112,7 @@ export const Form = () => {
             <div className="divider"></div>
             {!savingThrow && skills.length > 0 && (
                <>
-                  <section id="skill" className="space-y-8">
-                     <label htmlFor="skill-selector" className="text-lg">
-                        Selecione uma perícia:
-                     </label>
-                     <br />
-                     <select
-                        id="skill-selector"
-                        name="skill"
-                        required
-                        defaultValue={""}
-                        className="select select-info w-full max-w-xs"
-                        onChange={e => handleSkillSelect(e.target.value)}>
-                        <option disabled></option>
-                        {skills.map((skill, index) => {
-                           return <option key={index}>{skill}</option>;
-                        })}
-                     </select>
-                     {selectedSkill && <DescricaoColapsable content={selectedSkill} />}
-                  </section>
+                  <SkillSelector skills={skills} setIsSkillSelected={setIsSkillSelected} savingThrow={savingThrow} />
                   <div className="divider"></div>
                </>
             )}
@@ -157,7 +122,7 @@ export const Form = () => {
                   Limpar
                </button> */}
                {!savingThrow ? (
-                  <button type="submit" disabled={!selectedSkill} className="btn btn-accent px-6">
+                  <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
                      Salvar
                   </button>
                ) : (
