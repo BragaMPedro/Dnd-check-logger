@@ -25,17 +25,24 @@ export const AbilitySelector = ({
    const [disableCheckbox, setDisableCheckbox] = useState<boolean>(false);
 
    async function handleAbilitySelect(e: string) {
-      const abilityRes = (await getAbilityScoresById(e)).data;
+      
+      try {
+         const abilityRes = (await getAbilityScoresById(e)).data;
 
-      let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
-      setSelectedAbility(ability);
-
-      let skills = abilityRes.skills.map(skill => {
-         return skill.name;
-      });
+         let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
+         setSelectedAbility(ability);
+         setIsAbilitySelected(true);
+         
+         const skills = abilityRes.skills.map(skill => {
+            return skill.name;
+         });
+         
+         setSkills(skills);
+      } catch (err) {
+         console.log(err);
+      }
 
       e === "con" ? (setSavingThrow(true), setDisableCheckbox(true)) : setDisableCheckbox(false);
-      setSkills(skills);
    }
 
    function handleSavingThrowSwitch(e: ChangeEvent<HTMLInputElement>) {
@@ -45,7 +52,7 @@ export const AbilitySelector = ({
       if (!currentSavingThrow) {
          setSkills([]);
       }
-   };
+   }
 
    return (
       <section className="space-y-8">
