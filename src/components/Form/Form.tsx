@@ -3,8 +3,10 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
+import { Log } from "@/types/Log";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
+import { LogModal } from "../Modal/LogModal";
 import { SkillSelector } from "../SkillSelector/SkillSelector";
 
 export const Form = () => {
@@ -12,6 +14,8 @@ export const Form = () => {
    const [abilities, setAbilities] = useState<string[]>([]);
    const [skills, setSkills] = useState<string[]>([]);
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
+   const [modalAberto, setModalAberto] = useState<boolean>(false);
+   const [log, setLog] = useState<Log[]>([]);
 
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
@@ -34,55 +38,72 @@ export const Form = () => {
       }
 
       setTimeout(() => setLoading(false), 2200);
-   }
+   };
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
       e.preventDefault();
 
       const formData = new FormData(e.currentTarget);
-      const ability = formData.get("ability");
-      const skill = formData.get("skill");
-      const savingThrow = Boolean(formData.get("saving-throw"));
 
-      console.table(Array.from(formData.entries()));
-   }
+      const ability = formData.get("ability")!.toString();
+      const skill = formData.get("skill") ? formData.get("skill")!.toString() : undefined;
+      const savingThrow = Boolean(formData.get("saving-throw"))
+      const data = new Date().toLocaleDateString();
+
+      const novoLog = {
+         ability: ability,
+         skill: skill,
+         savingThrow: savingThrow,
+         createdAt: data
+      };
+
+      console.table(novoLog)
+
+      setLog([...log, novoLog]);
+      setModalAberto(true);
+   };
 
    if (loading) {
       return <LoadingScreen />;
    } else {
       return (
-         <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
-            <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">Super Duper DnD Check Logger</h2>
-            <AbilitySelector
-               abilities={abilities}
-               savingThrow={savingThrow}
-               setSkills={setSkills}
-               setSavingThrow={setSavingThrow}
-               setIsAbilitySelected={setIsAbilitySelected}
-            />
-            <div className="divider"></div>
-            {!savingThrow && skills.length > 0 && (
-               <>
-                  <SkillSelector skills={skills} setIsSkillSelected={setIsSkillSelected} savingThrow={savingThrow} />
-                  <div className="divider"></div>
-               </>
-            )}
+         <>
+            {modalAberto && <LogModal logs={log} setModal={setModalAberto} />}
+            <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
+               <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">
+                  Super Duper DnD Check Logger
+               </h2>
+               <AbilitySelector
+                  abilities={abilities}
+                  savingThrow={savingThrow}
+                  setSkills={setSkills}
+                  setSavingThrow={setSavingThrow}
+                  setIsAbilitySelected={setIsAbilitySelected}
+               />
+               <div className="divider"></div>
+               {!savingThrow && skills.length > 0 && (
+                  <>
+                     <SkillSelector skills={skills} setIsSkillSelected={setIsSkillSelected} savingThrow={savingThrow} />
+                     <div className="divider"></div>
+                  </>
+               )}
 
-            <div id="btn-container" className="w-full flex items-center justify-end space-x-4">
-               {/* <button type="reset" disabled={!selectedAbility} className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
+               <div id="btn-container" className="w-full flex items-center justify-end space-x-4">
+                  {/* <button type="reset" disabled={!selectedAbility} className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
                   Limpar
                </button> */}
-               {!savingThrow ? (
-                  <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
-                     Salvar
-                  </button>
-               ) : (
-                  <button type="submit" disabled={!isAbilitySelected} className="btn btn-accent px-6">
-                     Salvar
-                  </button>
-               )}
-            </div>
-         </form>
+                  {!savingThrow ? (
+                     <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
+                        Salvar
+                     </button>
+                  ) : (
+                     <button type="submit" disabled={!isAbilitySelected} className="btn btn-accent px-6">
+                        Salvar
+                     </button>
+                  )}
+               </div>
+            </form>
+         </>
       );
    }
 };
