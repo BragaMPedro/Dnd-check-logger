@@ -1,5 +1,6 @@
 import { Log } from "@/types/Log";
 import { Dispatch, SetStateAction } from "react";
+import { ExportButton } from "../ExportButton/ExportButton";
 
 interface LogModalProps {
    logs: Log[];
@@ -32,7 +33,7 @@ export const LogModal = ({ logs, setModal }: LogModalProps) => {
                );
             })}
             <div className="modal-action">
-               <button className="btn btn-circle">copiar</button>
+               <ExportButton logList={logs} />
             </div>
          </div>
          <form method="dialog" className="modal-backdrop">
