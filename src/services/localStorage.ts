@@ -13,6 +13,11 @@ export async function postLog(novoLog: Log) {
    localStorage.setItem("logArray", JSON.stringify(logArray));
 }
 
+export async function postMultipleLogs(novosLogsArray: Log[]) {
+
+   localStorage.setItem("logArray", JSON.stringify(novosLogsArray));
+}
+
 export async function deleteLog(index: number) {
    const logArray = await getLog();
 

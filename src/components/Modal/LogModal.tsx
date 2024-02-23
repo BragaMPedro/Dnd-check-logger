@@ -1,32 +1,48 @@
 "use client";
 
-import { getLog } from "@/services/localStorage";
+import { getLog, postMultipleLogs } from "@/services/localStorage";
 import { Log } from "@/types/Log";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ExportButton } from "../ExportButton/ExportButton";
 
 interface LogModalProps {
    setModal: Dispatch<SetStateAction<boolean>>;
+   indicator: number;
+   setIndicator: Dispatch<SetStateAction<number>>;
 }
 
-export const LogModal = ({ setModal }: LogModalProps) => {
+export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) => {
    const [logs, setLogs] = useState<Log[]>([]);
 
    useEffect(() => {
       pegarLogs();
-      return ()=>{
-         setLogs([])
-      }
+
+      return () => {
+         setLogs([]);
+      };
    }, []);
 
    async function pegarLogs() {
       try {
          const storageLogs = await getLog();
 
-         setLogs(storageLogs);
+         setLogs(storageLogs);         
       } catch (err) {
          console.log(err);
       }
+   }
+
+   function resetsIndicators() {
+      setIndicator(0);
+      const logsAtualizados = logs.map(log => {
+         if (!log.exported) {
+            return { ...log, exported: true };
+         }
+         return log
+      });
+
+      setLogs(logsAtualizados);
+      postMultipleLogs(logsAtualizados)
    }
 
    return (
@@ -46,11 +62,19 @@ export const LogModal = ({ setModal }: LogModalProps) => {
                         {logs[index - 1] && log.createdAt === logs[index - 1].createdAt ? (
                            <></>
                         ) : (
-                           <div className="divider divider-start space-y-4 text-left">{log.createdAt}</div>
+                           <h3 className="divider divider-start space-y-4 text-left">{log.createdAt}</h3>
                         )}
-                        {log.skill
-                           ? `- ${log.skill} (${log.ability.toUpperCase()}) Check`
-                           : `- ${log.ability.toUpperCase()} Saving Throw`}
+                        <div className="indicator">
+                           <span
+                              className={`indicator-item indicator-end badge badge-secondary ${
+                                 !log.exported ? "visible:" : "invisible"
+                              }`}></span>
+                           <p>
+                              {log.skill
+                                 ? `- ${log.skill} (${log.ability.toUpperCase()}) Check`
+                                 : `- ${log.ability.toUpperCase()} Saving Throw`}
+                           </p>
+                        </div>
                      </div>
                   );
                })
@@ -60,7 +84,7 @@ export const LogModal = ({ setModal }: LogModalProps) => {
                </div>
             )}
             <div className="modal-action">
-               <ExportButton logList={logs} />
+               <ExportButton logList={logs} resetsIndicators={resetsIndicators} />
             </div>
          </div>
          <form method="dialog" className="modal-backdrop">

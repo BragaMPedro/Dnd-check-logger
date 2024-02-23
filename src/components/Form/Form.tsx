@@ -10,12 +10,13 @@ import { LogModal } from "../Modal/LogModal";
 import { SkillSelector } from "../SkillSelector/SkillSelector";
 
 export const Form = () => {
-   const [loading, setLoading] = useState<boolean>(false);
    const [abilities, setAbilities] = useState<string[]>([]);
    const [skills, setSkills] = useState<string[]>([]);
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
-   const [modalAberto, setModalAberto] = useState<boolean>(false);
 
+   const [loading, setLoading] = useState<boolean>(false);
+   const [indicator, setIndicator] = useState<number>(0);
+   const [modalAberto, setModalAberto] = useState<boolean>(false);
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
 
@@ -30,7 +31,7 @@ export const Form = () => {
          let habilidades = abilityArray.results.map(stat => {
             return stat.name;
          });
-         
+
          setAbilities(habilidades);
       } catch (error) {
          console.error(error);
@@ -54,11 +55,11 @@ export const Form = () => {
          skill: skill,
          savingThrow: savingThrow,
          createdAt: data,
+         exported: false,
       };
 
-      console.table(novoLog);
-
       postLog(novoLog);
+      setIndicator(indicator + 1);
    }
 
    if (loading) {
@@ -66,7 +67,7 @@ export const Form = () => {
    } else {
       return (
          <>
-            {modalAberto && <LogModal setModal={setModalAberto} />}
+            {modalAberto && <LogModal setModal={setModalAberto} indicator={indicator} setIndicator={setIndicator} />}
             <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
                <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">
                   Super Duper DnD Check Logger
@@ -87,14 +88,20 @@ export const Form = () => {
                )}
 
                <div id="btn-container" className="w-full flex items-center justify-end space-x-4">
-                  {/* <div className="indicator"> */}
-                     {/* <span className="indicator-item badge badge-secondary">99+</span> */}
+                  <div className="indicator">
+                     <span
+                        className={`indicator-item badge badge-secondary text-white ${
+                           indicator > 0 ? "visible" : "invisible"
+                        }`}>
+                        {indicator}
+                     </span>
                      <button
+                        type="button"
                         onClick={() => setModalAberto(true)}
                         className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
                         Ver Log
                      </button>
-                  {/* </div> */}
+                  </div>
                   {!savingThrow ? (
                      <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
                         Salvar

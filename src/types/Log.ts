@@ -3,4 +3,5 @@ export interface Log{
     skill?: string
     savingThrow?: boolean
     createdAt: string
+    exported: boolean
 }

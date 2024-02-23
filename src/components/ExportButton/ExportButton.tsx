@@ -3,22 +3,27 @@ import { useEffect, useState } from "react";
 
 interface ExportButtonProps {
    logList: Log[];
+   resetsIndicators: () => void
 }
 
-export const ExportButton = ({ logList }: ExportButtonProps) => {
+export const ExportButton = ({ logList, resetsIndicators }: ExportButtonProps) => {
    const [downloadLink, setDownloadLink] = useState("");
 
    useEffect(() => {
       createTxtLog();
    }, [logList]);
 
+   function handleExport(){
+      resetsIndicators()
+   };
+
    function createLogIdentifier() {
       if (logList && logList.length > 1) {
          return logList[logList.length - 1].createdAt.replaceAll("/", "-");
       } else {
          return "";
-      }
-   }
+      };
+   };
 
    function formatLogExport(logObjects: Log[]) {
       const formattedLog = logObjects.map((log, index) => {
@@ -45,7 +50,12 @@ export const ExportButton = ({ logList }: ExportButtonProps) => {
    }
 
    return (
-      <a href={downloadLink} className={`btn btn-info ${createLogIdentifier().length === 0 && "btn-disabled disabled"} `} download={`DnDCheckLog_${createLogIdentifier()}`}>
+      <a 
+         href={downloadLink}
+         download={`DnDCheckLog_${createLogIdentifier()}`}
+         onClick={handleExport}
+         className={`btn btn-info ${createLogIdentifier().length === 0 && "btn-disabled disabled"} `}
+      >
          Exportar
       </a>
    );
