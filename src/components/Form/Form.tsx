@@ -70,7 +70,7 @@ export const Form = () => {
             {modalAberto && <LogModal setModal={setModalAberto} indicator={indicator} setIndicator={setIndicator} />}
             <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
                <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">
-                  Super Duper DnD Check Logger
+                  Super Duper D&D Check Logger
                </h2>
                <AbilitySelector
                   abilities={abilities}

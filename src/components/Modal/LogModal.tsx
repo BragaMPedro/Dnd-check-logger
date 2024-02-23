@@ -66,7 +66,7 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
                         )}
                         <div className="indicator">
                            <span
-                              className={`indicator-item indicator-end badge badge-secondary ${
+                              className={`indicator-item indicator-end inset-x-full badge badge-secondary ${
                                  !log.exported ? "visible:" : "invisible"
                               }`}></span>
                            <p>
