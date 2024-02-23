@@ -1,20 +1,20 @@
 import { Log } from "@/types/Log";
 
-export function getLog(): Log[] {
+export function getLog(): Promise<Log[]> {
    const logArray = localStorage.getItem("logArray");
 
    return logArray ? JSON.parse(logArray) : [];
 }
 
-export function postLog(novoLog: Log) {
-   const logArray = getLog();
+export async function postLog(novoLog: Log) {
+   const logArray = await getLog();
    logArray.push(novoLog);
 
    localStorage.setItem("logArray", JSON.stringify(logArray));
 }
 
-export function deleteLog(index: number) {
-   const logArray = getLog();
+export async function deleteLog(index: number) {
+   const logArray = await getLog();
 
    const deletedItem = logArray.splice(index, 1);
    console.log(deletedItem);

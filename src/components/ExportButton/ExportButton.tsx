@@ -12,6 +12,14 @@ export const ExportButton = ({ logList }: ExportButtonProps) => {
       createTxtLog();
    }, [logList]);
 
+   function createLogIdentifier() {
+      if (logList && logList.length > 1) {
+         return logList[logList.length - 1].createdAt.replaceAll("/", "-");
+      } else {
+         return "";
+      }
+   }
+
    function formatLogExport(logObjects: Log[]) {
       const formattedLog = logObjects.map((log, index) => {
          let data =
@@ -31,16 +39,13 @@ export const ExportButton = ({ logList }: ExportButtonProps) => {
 
    function createTxtLog() {
       const data = new Blob(formatLogExport(logList), { type: "text/plain" });
-      if (downloadLink !== "") window.URL.revokeObjectURL(downloadLink);
 
+      if (downloadLink !== "") window.URL.revokeObjectURL(downloadLink);
       setDownloadLink(window.URL.createObjectURL(data));
    }
 
    return (
-      <a
-         href={downloadLink}
-         download={`DnDCheckLog_${logList[logList.length - 1].createdAt.replace("/", "-")}`}
-         className="btn btn-info">
+      <a href={downloadLink} className={`btn btn-info ${createLogIdentifier().length === 0 && "btn-disabled disabled"} `} download={`DnDCheckLog_${createLogIdentifier()}`}>
          Exportar
       </a>
    );

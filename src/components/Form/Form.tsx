@@ -3,7 +3,7 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
-import { Log } from "@/types/Log";
+import { postLog } from "@/services/localStorage";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { LogModal } from "../Modal/LogModal";
@@ -15,7 +15,6 @@ export const Form = () => {
    const [skills, setSkills] = useState<string[]>([]);
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
    const [modalAberto, setModalAberto] = useState<boolean>(false);
-   const [log, setLog] = useState<Log[]>([]);
 
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
@@ -28,17 +27,17 @@ export const Form = () => {
       setLoading(true);
       try {
          const abilityArray = (await getAbilityScores()).data;
-
          let habilidades = abilityArray.results.map(stat => {
             return stat.name;
          });
+         
          setAbilities(habilidades);
       } catch (error) {
          console.error(error);
       }
 
       setTimeout(() => setLoading(false), 2200);
-   };
+   }
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
       e.preventDefault();
@@ -47,28 +46,27 @@ export const Form = () => {
 
       const ability = formData.get("ability")!.toString();
       const skill = formData.get("skill") ? formData.get("skill")!.toString() : undefined;
-      const savingThrow = Boolean(formData.get("saving-throw"))
+      const savingThrow = Boolean(formData.get("saving-throw"));
       const data = new Date().toLocaleDateString();
 
       const novoLog = {
          ability: ability,
          skill: skill,
          savingThrow: savingThrow,
-         createdAt: data
+         createdAt: data,
       };
 
-      console.table(novoLog)
+      console.table(novoLog);
 
-      setLog([...log, novoLog]);
-      setModalAberto(true);
-   };
+      postLog(novoLog);
+   }
 
    if (loading) {
       return <LoadingScreen />;
    } else {
       return (
          <>
-            {modalAberto && <LogModal logs={log} setModal={setModalAberto} />}
+            {modalAberto && <LogModal setModal={setModalAberto} />}
             <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
                <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">
                   Super Duper DnD Check Logger
@@ -89,9 +87,14 @@ export const Form = () => {
                )}
 
                <div id="btn-container" className="w-full flex items-center justify-end space-x-4">
-                  {/* <button type="reset" disabled={!selectedAbility} className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
-                  Limpar
-               </button> */}
+                  {/* <div className="indicator"> */}
+                     {/* <span className="indicator-item badge badge-secondary">99+</span> */}
+                     <button
+                        onClick={() => setModalAberto(true)}
+                        className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
+                        Ver Log
+                     </button>
+                  {/* </div> */}
                   {!savingThrow ? (
                      <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
                         Salvar
