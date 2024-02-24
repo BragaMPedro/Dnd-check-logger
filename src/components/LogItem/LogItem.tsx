@@ -1,4 +1,5 @@
 import { Log } from "@/types/Log";
+import { Delete } from "lucide-react";
 import { useState } from "react";
 
 interface LogItemProps {
@@ -10,15 +11,22 @@ interface LogItemProps {
 
 export const LogItem = ({ index, log, logs, btnAction }: LogItemProps) => {
    const [hover, setHover] = useState<boolean>(false);
+   const [toggleAnimation, setToggleAnimation] = useState<boolean>(false);
 
    function buttonAction() {
-      btnAction
-        ? btnAction()
-        : console.log("LOG CLICADO", index, log);
+      setToggleAnimation(state => !state);
+   }
+
+   function handleMouseOver() {
+      setHover(true);
+   }
+
+   function handleMouseOut() {
+      setHover(false);
    }
 
    return (
-      <div onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)} className="flex-1 min-h-10">
+      <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className="flex-1 min-h-10">
          {logs[index - 1] && log.createdAt === logs[index - 1].createdAt ? (
             <></>
          ) : (
@@ -40,9 +48,20 @@ export const LogItem = ({ index, log, logs, btnAction }: LogItemProps) => {
                      : `- ${log.ability.toUpperCase()} Saving Throw`}
                </p>
             </div>
-            <button type="button" onClick={buttonAction} className={`btn btn-ghost ${hover ? "visible" : "invisible"}`}>
-               Deletar
-            </button>
+            <div
+               className={`bg-black bg-opacity-10 rounded-full sm;transition-shadow sm:transition-[width] sm:overflow-hidden duration-1000 ease-in-out relative sm:flex sm:items-center ${
+                  toggleAnimation ? "sm:w-1/3 sm:shadow-inner shadow-black" : "w-fit"
+               } ${hover || toggleAnimation ? "visible" : "invisible"}`}>
+               <button type="button" onClick={buttonAction} className={`btn btn-neutral btn-circle sticky z-10 left-0`}>
+                  <Delete color="#ffffff" />
+               </button>
+               <button
+                  type="button"
+                  onClick={() => console.log("DELETE CLICK")}
+                  className={`btn btn-outline btn-error btn-sm rounded-full m-2 text-center text-white absolute right-0`}>
+                  Deletar
+               </button>
+            </div>
          </div>
       </div>
    );

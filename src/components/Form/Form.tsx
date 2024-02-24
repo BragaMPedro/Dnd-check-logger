@@ -101,7 +101,7 @@ export const Form = () => {
                      <button
                         type="button"
                         onClick={() => setModalAberto(true)}
-                        className="btn border border-[#00cdb7] text-[#00cdb7] bg-transparent px-6 hover:border-0 hover:bg-[#00cdb750]">
+                        className="btn btn-outline btn-info">
                         Ver Log
                      </button>
                   </div>
