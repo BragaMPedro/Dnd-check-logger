@@ -57,7 +57,7 @@ export const LogItem = ({ index, log, logs, btnAction }: LogItemProps) => {
                </button>
                <button
                   type="button"
-                  onClick={() => console.log("DELETE CLICK")}
+                  onClick={() => alert("Função vindo em breve...\nObrigado pelo interesse")}
                   className={`btn btn-outline btn-error btn-sm rounded-full m-2 text-center text-white absolute right-0`}>
                   Deletar
                </button>
