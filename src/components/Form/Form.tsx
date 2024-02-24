@@ -3,7 +3,7 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
-import { postLog } from "@/services/localStorage";
+import { postIndicadores, postLog } from "@/services/localStorage";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { LogModal } from "../Modal/LogModal";
@@ -59,6 +59,7 @@ export const Form = () => {
       };
 
       postLog(novoLog);
+      postIndicadores(indicator + 1);
       setIndicator(indicator + 1);
    }
 

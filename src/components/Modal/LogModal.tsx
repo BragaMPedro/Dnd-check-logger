@@ -1,9 +1,10 @@
 "use client";
 
-import { getLog, postMultipleLogs } from "@/services/localStorage";
+import { getIndicadores, getLog, postIndicadores, postMultipleLogs } from "@/services/localStorage";
 import { Log } from "@/types/Log";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ExportButton } from "../ExportButton/ExportButton";
+import { LogItem } from "../LogItem/LogItem";
 
 interface LogModalProps {
    setModal: Dispatch<SetStateAction<boolean>>;
@@ -16,6 +17,7 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
 
    useEffect(() => {
       pegarLogs();
+      pegarIndicadores();
 
       return () => {
          setLogs([]);
@@ -26,10 +28,16 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
       try {
          const storageLogs = await getLog();
 
-         setLogs(storageLogs);         
+         setLogs(storageLogs);
       } catch (err) {
          console.log(err);
       }
+   }
+
+   async function pegarIndicadores() {
+      const indicadoresStorage = await getIndicadores();
+
+      setIndicator(indicadoresStorage);
    }
 
    function resetsIndicators() {
@@ -38,16 +46,17 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
          if (!log.exported) {
             return { ...log, exported: true };
          }
-         return log
+         return log;
       });
 
       setLogs(logsAtualizados);
-      postMultipleLogs(logsAtualizados)
+      postIndicadores(0);
+      postMultipleLogs(logsAtualizados);
    }
 
    return (
       <dialog id="my_modal_5" className="modal modal-open modal-scroll modal-bottom sm:modal-middle">
-         <div className="modal-box space-y-8">
+         <div className="modal-box space-y-4">
             <form method="dialog">
                <button
                   onClick={() => setModal(false)}
@@ -55,34 +64,17 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
                   ✕
                </button>
             </form>
-            {logs.length > 0 ? (
-               logs.map((log, index) => {
-                  return (
-                     <div key={index}>
-                        {logs[index - 1] && log.createdAt === logs[index - 1].createdAt ? (
-                           <></>
-                        ) : (
-                           <h3 className="divider divider-start space-y-4 text-left">{log.createdAt}</h3>
-                        )}
-                        <div className="indicator">
-                           <span
-                              className={`indicator-item indicator-end inset-x-full badge badge-secondary ${
-                                 !log.exported ? "visible:" : "invisible"
-                              }`}></span>
-                           <p>
-                              {log.skill
-                                 ? `- ${log.skill} (${log.ability.toUpperCase()}) Check`
-                                 : `- ${log.ability.toUpperCase()} Saving Throw`}
-                           </p>
-                        </div>
-                     </div>
-                  );
-               })
-            ) : (
-               <div className="flex flex-1 items-center justify-center">
-                  <h2 className="text-center text-lg">Ainda não há registros</h2>
-               </div>
-            )}
+            <main className="flex flex-col justify-between">
+               {logs.length > 0 ? (
+                  logs.map((log, index) => {
+                     return <LogItem key={index} index={index} log={log} logs={logs} />;
+                  })
+               ) : (
+                  <div className="flex flex-1 items-center justify-center">
+                     <h2 className="text-center text-lg">Ainda não há registros</h2>
+                  </div>
+               )}
+            </main>
             <div className="modal-action">
                <ExportButton logList={logs} resetsIndicators={resetsIndicators} />
             </div>
