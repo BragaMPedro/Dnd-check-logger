@@ -3,7 +3,7 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
-import { postIndicadores, postLog } from "@/services/localStorage";
+import { getIndicadores, postIndicadores, postLog } from "@/services/localStorage";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { LogModal } from "../Modal/LogModal";
@@ -21,10 +21,10 @@ export const Form = () => {
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
 
    useEffect(() => {
-      getHabilidades();
+      getDadosIniciais();
    }, []);
 
-   async function getHabilidades() {
+   async function getDadosIniciais() {
       setLoading(true);
       try {
          const abilityArray = (await getAbilityScores()).data;
@@ -36,7 +36,9 @@ export const Form = () => {
       } catch (error) {
          console.error(error);
       }
+      const indicadoresStorage = await getIndicadores();
 
+      setIndicator(indicadoresStorage);
       setTimeout(() => setLoading(false), 2200);
    }
 
