@@ -13,6 +13,7 @@ interface LogModalProps {
 }
 
 export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) => {
+   const isMobile = checkPlatform()
    const [logs, setLogs] = useState<Log[]>([]);
 
    useEffect(() => {
@@ -23,6 +24,22 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
          setLogs([]);
       };
    }, []);
+
+   function checkPlatform() { 
+      if( navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)
+      ){
+         return true;
+       }
+      else {
+         return false;
+       }
+     };
 
    async function pegarLogs() {
       try {
@@ -67,7 +84,7 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
             <main className="flex flex-col justify-between">
                {logs.length > 0 ? (
                   logs.map((log, index) => {
-                     return <LogItem key={index} index={index} log={log} logs={logs} />;
+                     return <LogItem key={index} index={index} log={log} logs={logs} isMobile={isMobile} />;
                   })
                ) : (
                   <div className="flex flex-1 items-center justify-center">
