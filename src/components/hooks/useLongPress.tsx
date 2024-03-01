@@ -44,7 +44,6 @@ export const useLongPress = ({
          if (shouldPreventDefault && target.current) {
             target.current.removeEventListener("touchend", preventDefault);
          }
-         console.log("ClearEVENT", event);
          
       },
       [shouldPreventDefault, onClick, longPressTriggered]
