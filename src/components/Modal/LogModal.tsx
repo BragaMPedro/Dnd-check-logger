@@ -13,8 +13,8 @@ interface LogModalProps {
 }
 
 export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) => {
-   const isMobile = checkPlatform()
    const [logs, setLogs] = useState<Log[]>([]);
+   const isMobile = checkPlatform()
 
    useEffect(() => {
       pegarLogs();
@@ -81,7 +81,7 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
                   ✕
                </button>
             </form>
-            <main className="flex flex-col justify-between">
+            <main className={`flex flex-col justify-between ${isMobile && "space-y-6"}`}>
                {logs.length > 0 ? (
                   logs.map((log, index) => {
                      return <LogItem key={index} index={index} log={log} logs={logs} isMobile={isMobile} />;
