@@ -1,5 +1,5 @@
 import { Log } from "@/types/Log";
-import { Menu } from "lucide-react";
+import { Construction, Menu } from "lucide-react";
 import { useState } from "react";
 import { useLongPress } from "../../hooks/useLongPress";
 
@@ -56,16 +56,24 @@ export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps)
                      }>
                      <Menu color="#ffffff" />
                   </button>
-                  <ul tabIndex={0} className="dropdown-content space-y-2 z-10 menu px-4 py-2 shadow bg-gray-700 rounded-box w-fit">
+                  <ul
+                     tabIndex={0}
+                     className="dropdown-content overflow-hidden space-y-2 z-10 shadow bg-gray-700 rounded-box w-fit">
                      <li
-                        className={"no-underline text-gray-500"}
+                        className="flex items-center justify-between px-4 pt-2 space-x-8 cursor-pointer hover:underline hover:bg-white/15"
                         onClick={() => alert("Essa função ainda está em desenvolvimento.")}>
-                        Editar
+                        <p className="text-white">Editar</p>
+                        <Construction color="#f0a531" />
                      </li>
                      <li
-                        className={"text-white cursor-pointer hover:underline"}
-                        onClick={() => confirm("Deseja realmente deletar o log?")}>
-                        Deletar
+                        className="flex items-center justify-between px-4 pb-2 space-x-8 cursor-pointer hover:underline hover:bg-white/15"
+                        onClick={() =>
+                           confirm(
+                              "Deseja realmente deletar o log?\n\nEssa função ainda está em desenvolvimento,\nmas pode dar o Ok se quiser"
+                           )
+                        }>
+                        <p className="text-white">Deletar</p>
+                        <Construction color="#f0a531" />
                      </li>
                   </ul>
                </div>
