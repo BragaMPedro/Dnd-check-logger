@@ -1,7 +1,7 @@
 import { Log } from "@/types/Log";
-import { Delete } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useState } from "react";
-import { useLongPress } from "../hooks/useLongPress";
+import { useLongPress } from "../../hooks/useLongPress";
 
 interface LogItemProps {
    index: number;
@@ -12,32 +12,18 @@ interface LogItemProps {
 }
 
 export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps) => {
-   const [hover, setHover] = useState<boolean>(false);
-   const [toggleAnimation, setToggleAnimation] = useState<boolean>(false);
-
    const [longPress, setLongPress] = useState<boolean>(false);
 
    const onLongPress = (e: any) => {
+      console.log("onLongPress triggered", e);
       setLongPress(state => !state);
    };
 
    const onClick = (e: any) => {
-      console.log("click is triggered", e);
+      console.log("onClick triggered", e);
    };
 
    const longPressEvent = useLongPress({ onLongPress, onClick, options: { shouldPreventDefault: true, delay: 500 } });
-
-   function showDelete() {
-      setToggleAnimation(state => !state);
-   }
-
-   function handleMouseOver() {
-      setHover(true);
-   }
-
-   function handleMouseOut() {
-      setHover(false);
-   }
 
    if (!isMobile) {
       return (
@@ -48,9 +34,7 @@ export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps)
                <h3 className="divider divider-start text-left">{log.createdAt}</h3>
             )}
 
-            <div
-               className={`flex p-2 w-[98%] items-center justify-between
-          ${hover && "bg-opacity-5 bg-white rounded-md"}`}>
+            <div className={`flex p-2 w-[98%] items-center justify-between`}>
                <div className="indicator">
                   <span
                      className={`indicator-item indicator-end sm:inset-x-full -right-1/4 text-white badge badge-secondary
@@ -63,23 +47,27 @@ export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps)
                         : `- ${log.ability.toUpperCase()} Saving Throw`}
                   </p>
                </div>
-               <div
-                  onMouseOver={handleMouseOver}
-                  onMouseOut={handleMouseOut}
-                  className={`rounded-full sm:overflow-hidden sm:transition-[width] duration-1000 ease-in-out relative sm:flex sm:items-center ${
-                     hover ? "sm:w-1/3 sm:shadow-inner bg-error shadow-black" : "w-fit"
-                  }`}>
-                  <div
-                     onClick={showDelete}
-                     className={`rounded-full sticky z-10 left-0`}>
-                     <Delete color="#ffffff" />
-                  </div>
+               <div className="dropdown dropdown-hover dropdown-top dropdown-end">
                   <button
+                     tabIndex={0}
                      type="button"
-                     onClick={() => confirm("Deseja realmente deletar o log?")}
-                     className={`btn btn-link z-0 sm:inline-flex no-underline text-white absolute right-0`}>
-                     Deletar
+                     className={
+                        "rounded-full opacity-50 w-fit p-1 duration-300 ease-in-out relative sm:flex sm:items-center hover:bg-gray-700 hover:opacity-100"
+                     }>
+                     <Menu color="#ffffff" />
                   </button>
+                  <ul tabIndex={0} className="dropdown-content space-y-2 z-10 menu px-4 py-2 shadow bg-gray-700 rounded-box w-fit">
+                     <li
+                        className={"no-underline text-gray-500"}
+                        onClick={() => alert("Essa função ainda está em desenvolvimento.")}>
+                        Editar
+                     </li>
+                     <li
+                        className={"text-white cursor-pointer hover:underline"}
+                        onClick={() => confirm("Deseja realmente deletar o log?")}>
+                        Deletar
+                     </li>
+                  </ul>
                </div>
             </div>
          </div>
@@ -93,7 +81,7 @@ export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps)
                <h3 className="divider divider-start text-left">{log.createdAt}</h3>
             )}
 
-            <div className={`flex p-2 w-[98%] items-center justify-between`} {...longPressEvent}>
+            <div className={`flex p-2 w-[96%] items-center justify-between`} {...longPressEvent}>
                <div className="indicator">
                   <span
                      className={`indicator-item indicator-end sm:inset-x-full -right-1/4 text-white badge badge-secondary
@@ -105,17 +93,6 @@ export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps)
                         ? `- ${log.skill} (${log.ability.toUpperCase()}) Check`
                         : `- ${log.ability.toUpperCase()} Saving Throw`}
                   </p>
-               </div>
-               <div
-                  className={`rounded-full sm:overflow-hidden duration-1000 ease-in-out relative sm:flex sm:items-center ${
-                     toggleAnimation ? "sm:w-1/3 sm:transition-[width] sm:shadow-inner bg-error shadow-black" : "w-fit"
-                  }`}>
-                  <button
-                     type="button"
-                     onClick={() => confirm("Deseja realmente deletar o log?")}
-                     className={`btn btn-link z-0 sm:inline-flex no-underline text-white absolute right-0`}>
-                     Deletar
-                  </button>
                </div>
             </div>
          </div>
