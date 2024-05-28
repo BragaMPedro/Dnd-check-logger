@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# D&D Check Logger
 
-## Getting Started
+## Tabela de Conteúdos
+1. [Sobre o Projeto](#sobre-o-projeto)
+	* [Funcionalidades](#funcionalidades)
+	* [Tecnologias Utilizadas](#tecnologias-utilizadas)
+2. [Iniciando o Projeto](#iniando-o-projeto)
+	* [Pré-requisitos](#pré-requisitos)
+	* [Instalação](#instalação)
+3. [Uso](#uso)
+4. [Contribuidores](#contribuidores)
+5. [Contato](#contato)
+   
+## Sobre o Projeto
+O D&D Check Logger é um aplicativo web que facilita a anotação de sucessos em testes em jogos de Dungeons and Dragons (ou outros jogos com status e atributos semelhantes).
+Ele elimina a necessidade de anotações manuais e permite que você se concentre em desfrutar do jogo. Tendo sempre a opção de rever seus testes com suas respectivas datas.
 
-First, run the development server:
+## Funcionalidades:
+* Registro de testes: ✅
+  - Tipo de teste ✅
+  - Atributo ✅
+  - Data de inserção ✅
+* Histórico de testes para consulta posterior ✅
+* Exportar Histórico em .txt ✅
+* Deletar teste ✅
+* Editar Teste 🚧
+* Registrar Dificuldade e Resultado do Teste 🚧
+* Login via Discord 🚧
 
+## Tecnologias Utilizadas:
+* [Next.js](https://nextjs.org/)
+* [React](https://react.dev/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [TailwindCSS](https://tailwindcss.com/)
+* [DaisyUI](https://daisyui.com/)
+
+## Iniciando o Projeto        
+### Pré-requisitos:
+Software de desenvolvimento web (ex: Visual Studio Code, Sublime Text). Navegador web (ex: Chrome, Firefox, Safari).  
+Conhecimento de React, HTML, Tailwind, Javascript,   
+Node.js 14.17.0 ou superior
+npm ou yarn
+
+### Instalação:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Clone o repositório:
+git clone https://github.com/seu-repositorio/D&D-Check-Logger.git
+
+Navegue para o diretório do projeto:
+cd D&D-Check-Logger
+
+Instale as dependências:
+npm install
+yarn install
 ```
+## Uso:
+```bash
+Execute o aplicativo:
+npm run dev
+yarn dev
+```
+Acesse o aplicativo em http://localhost:3000 no seu navegador.
+1. Escolha um Status
+   
+2. Escolha um atributo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Logue o teste
+   
+4. Clique em "Ver Logs" para checar seu histórico
+   
+## Contribuidores:
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://www.linkedin.com/in/pedrobragaresume/">
+        <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/111090976?v=4" width="100px;" alt=""/>
+        <br />
+        <sub><b>Pedro Braga</b></sub>
+      </a>
+      <br />
+       <br />
+      <a href="https://www.linkedin.com/in/pedrobragaresume/" title="LindedIn">
+        <img src="https://img.shields.io/badge/-Pedro-blue?style=flat-square&logo=Linkedin&logoColor=white" />
+      </a>
+    </td>
+  </tr>
+</table>
+## Contato
+[Link para o repositório do GitHub](https://github.com/BragaMPedro/frontend-essencials_2024.1)
+Pedro Braga Magalhães - [mailto:pedrobmagalhaes95@gmai.com](pedrobmagalhaes95@gmail.com)
