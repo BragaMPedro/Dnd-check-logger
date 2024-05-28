@@ -4,7 +4,7 @@
 1. [Sobre o Projeto](#sobre-o-projeto)
 	* [Funcionalidades](#funcionalidades)
 	* [Tecnologias Utilizadas](#tecnologias-utilizadas)
-2. [Iniciando o Projeto](#iniando-o-projeto)
+2. [Iniciando o Projeto](#iniciando-o-projeto)
 	* [Pré-requisitos](#pré-requisitos)
 	* [Instalação](#instalação)
 3. [Uso](#uso)
@@ -34,7 +34,7 @@ Ele elimina a necessidade de anotações manuais e permite que você se concentr
 * [TailwindCSS](https://tailwindcss.com/)
 * [DaisyUI](https://daisyui.com/)
 
-## Iniciando o Projeto        
+## Iniciando o Projeto
 ### Pré-requisitos:
 Software de desenvolvimento web (ex: Visual Studio Code, Sublime Text). Navegador web (ex: Chrome, Firefox, Safari).  
 Conhecimento de React, HTML, Tailwind, Javascript,   
@@ -42,24 +42,25 @@ Node.js 14.17.0 ou superior
 npm ou yarn
 
 ### Instalação:
+1. Clone o repositório:
 ```bash
-Clone o repositório:
 git clone https://github.com/seu-repositorio/D&D-Check-Logger.git
-
-Navegue para o diretório do projeto:
-cd D&D-Check-Logger
-
-Instale as dependências:
-npm install
-yarn install
 ```
-## Uso:
+2. Navegue para o diretório do projeto:
 ```bash
-Execute o aplicativo:
-npm run dev
-yarn dev
+cd Dnd-check-logger
 ```
-Acesse o aplicativo em http://localhost:3000 no seu navegador.
+3. Instale as dependências:
+```bash
+npm install
+```
+
+## Uso:
+Execute o programa
+```bash
+npm run dev
+```
+* Acesse o aplicativo em http://localhost:3000 no seu navegador.
 1. Escolha um Status
    
 2. Escolha um atributo
@@ -85,6 +86,7 @@ Acesse o aplicativo em http://localhost:3000 no seu navegador.
     </td>
   </tr>
 </table>
+
 ## Contato
-[Link para o repositório do GitHub](https://github.com/BragaMPedro/frontend-essencials_2024.1)
-Pedro Braga Magalhães - [mailto:pedrobmagalhaes95@gmai.com](pedrobmagalhaes95@gmail.com)
+[Link para o repositório do GitHub](https://github.com/BragaMPedro/Dnd-check-logger)
+Pedro Braga Magalhães - [pedrobmagalhaes95@gmai.com](mailto:pedrobmagalhaes95@gmail.com)
