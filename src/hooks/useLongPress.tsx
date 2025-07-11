@@ -11,6 +11,21 @@ interface LongPressConfig {
    delay: number;
 }
 
+const isTouchEvent = (event: MouseEvent | TouchEvent) => {
+
+   return "touches" in event;
+};
+
+const preventDefault = (event: any) => {
+   if (!isTouchEvent(event)) {
+      return;
+   } else {
+      if (event.touches.length < 2 && event.preventDefault) {
+         event.preventDefault();
+      }
+   }
+};
+
 export const useLongPress = ({
    onLongPress,
    onClick,
@@ -52,23 +67,8 @@ export const useLongPress = ({
    return {
       onMouseDown: (e: any) => start(e),
       onTouchStart: (e:any) => start(e),
-      onMouseUp: (e:any) => clear(e),
+      onMouseUp: (e:any) => clear(e,true),
       onMouseLeave: (e:any) => clear(e, false),
       onTouchEnd: (e:any) => clear(e),
    };
-};
-
-const isTouchEvent = (event: MouseEvent | TouchEvent) => {
-
-   return "touches" in event;
-};
-
-const preventDefault = (event: any) => {
-   if (!isTouchEvent(event)) {
-      return;
-   } else {
-      if (event.touches.length < 2 && event.preventDefault) {
-         event.preventDefault();
-      }
-   }
 };

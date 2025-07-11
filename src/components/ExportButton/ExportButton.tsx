@@ -18,7 +18,7 @@ export const ExportButton = ({ logList, resetsIndicators }: ExportButtonProps) =
    };
 
    function createLogIdentifier() {
-      if (logList && logList.length > 1) {
+      if (logList && logList.length > 0) {
          return logList[logList.length - 1].createdAt.replaceAll("/", "-");
       } else {
          return "";
