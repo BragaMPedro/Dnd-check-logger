@@ -3,7 +3,7 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
-import { getIndicadores, postIndicadores, postLog } from "@/services/localStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { LogModal } from "../Modal/LogModal";
@@ -15,10 +15,10 @@ export const Form = () => {
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
 
    const [loading, setLoading] = useState<boolean>(false);
-   const [indicator, setIndicator] = useState<number>(0);
    const [modalAberto, setModalAberto] = useState<boolean>(false);
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
+   const { indicator, postIndicator, postLog } = useLocalStorage();
 
    useEffect(() => {
       getDadosIniciais();
@@ -36,17 +36,13 @@ export const Form = () => {
       } catch (error) {
          console.error(error);
       }
-      const indicadoresStorage = await getIndicadores();
-
-      setIndicator(indicadoresStorage);
       setTimeout(() => setLoading(false), 2200);
    }
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+      // Handles form
       e.preventDefault();
-
       const formData = new FormData(e.currentTarget);
-
       const ability = formData.get("ability")!.toString();
       const skill = formData.get("skill") ? formData.get("skill")!.toString() : undefined;
       const savingThrow = Boolean(formData.get("saving-throw"));
@@ -60,9 +56,9 @@ export const Form = () => {
          exported: false,
       };
 
+      // Updates log and indicator states
       postLog(novoLog);
-      postIndicadores(indicator + 1);
-      setIndicator(indicator + 1);
+      postIndicator(indicator + 1);
    }
 
    if (loading) {
@@ -70,7 +66,7 @@ export const Form = () => {
    } else {
       return (
          <>
-            {modalAberto && <LogModal setModal={setModalAberto} indicator={indicator} setIndicator={setIndicator} />}
+            {modalAberto && <LogModal setModal={setModalAberto} />}
             <form onSubmit={handleSubmit} className="container mt-8 w-full space-y-8 max-w-2xl scroll-smooth">
                <h2 className="text-3xl text-center w-full mb-8 sm:mb-16 leading-normal">
                   Super Duper D&D Check Logger

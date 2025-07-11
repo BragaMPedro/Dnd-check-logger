@@ -1,64 +1,30 @@
 "use client";
 
-import { getIndicadores, getLog, postIndicadores, postMultipleLogs } from "@/services/localStorage";
-import { Log } from "@/types/Log";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { Dispatch, SetStateAction } from "react";
 import { ExportButton } from "../ExportButton/ExportButton";
 import { LogItem } from "../LogItem/LogItem";
-
 interface LogModalProps {
    setModal: Dispatch<SetStateAction<boolean>>;
-   indicator: number;
-   setIndicator: Dispatch<SetStateAction<number>>;
 }
 
-export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) => {
-   const [logs, setLogs] = useState<Log[]>([]);
-   const isMobile = checkPlatform()
+export const LogModal = ({ setModal }: LogModalProps) => {
+   const { logs, postMultipleLogs, indicator, postIndicator } = useLocalStorage();
+   const isMobile = checkPlatform();
 
-   useEffect(() => {
-      pegarLogs();
-      pegarIndicadores();
-
-      return () => {
-         setLogs([]);
-      };
-   }, []);
-
-   function checkPlatform() { 
-      if( navigator.userAgent.match(/Android/i)
-      || navigator.userAgent.match(/webOS/i)
-      || navigator.userAgent.match(/iPhone/i)
-      || navigator.userAgent.match(/iPad/i)
-      || navigator.userAgent.match(/iPod/i)
-      || navigator.userAgent.match(/BlackBerry/i)
-      || navigator.userAgent.match(/Windows Phone/i)
-      ){
-         return true;
-       }
-      else {
-         return false;
-       }
-     };
-
-   async function pegarLogs() {
-      try {
-         const storageLogs = await getLog();
-
-         setLogs(storageLogs);
-      } catch (err) {
-         console.log(err);
-      }
-   }
-
-   async function pegarIndicadores() {
-      const indicadoresStorage = await getIndicadores();
-
-      setIndicator(indicadoresStorage);
+   function checkPlatform() {
+      return (
+         navigator.userAgent.match(/Android/i) ||
+         navigator.userAgent.match(/webOS/i) ||
+         navigator.userAgent.match(/iPhone/i) ||
+         navigator.userAgent.match(/iPad/i) ||
+         navigator.userAgent.match(/iPod/i) ||
+         navigator.userAgent.match(/BlackBerry/i) ||
+         navigator.userAgent.match(/Windows Phone/i)
+      );
    }
 
    function resetsIndicators() {
-      setIndicator(0);
       const logsAtualizados = logs.map(log => {
          if (!log.exported) {
             return { ...log, exported: true };
@@ -66,8 +32,7 @@ export const LogModal = ({ setModal, indicator, setIndicator }: LogModalProps) =
          return log;
       });
 
-      setLogs(logsAtualizados);
-      postIndicadores(0);
+      postIndicator(0);
       postMultipleLogs(logsAtualizados);
    }
 
