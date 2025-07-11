@@ -3,7 +3,7 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useLocalStorageContext } from "@/contexts/LocalStorageContext";
 import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
 import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
 import { LogModal } from "../Modal/LogModal";
@@ -18,7 +18,7 @@ export const Form = () => {
    const [modalAberto, setModalAberto] = useState<boolean>(false);
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
-   const { indicator, postIndicator, postLog } = useLocalStorage();
+   const { indicator, postIndicator, postLog } = useLocalStorageContext();
 
    useEffect(() => {
       getDadosIniciais();

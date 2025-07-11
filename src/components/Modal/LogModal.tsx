@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useLocalStorageContext } from "@/contexts/LocalStorageContext";
 import { Dispatch, SetStateAction } from "react";
 import { ExportButton } from "../ExportButton/ExportButton";
 import { LogItem } from "../LogItem/LogItem";
@@ -9,7 +9,7 @@ interface LogModalProps {
 }
 
 export const LogModal = ({ setModal }: LogModalProps) => {
-   const { logs, postMultipleLogs, indicator, postIndicator } = useLocalStorage();
+   const { logs, postMultipleLogs, postIndicator } = useLocalStorageContext();
    const isMobile = checkPlatform();
 
    function checkPlatform() {
