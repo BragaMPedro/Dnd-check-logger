@@ -1,14 +1,14 @@
+import { useLongPress } from "@/hooks/useLongPress";
 import { Log } from "@/types/Log";
 import { Construction, Menu } from "lucide-react";
 import { useState } from "react";
-import { useLongPress } from "../../hooks/useLongPress";
 
 interface LogItemProps {
    index: number;
    log: Log;
    logs: Log[];
    btnAction?: () => void;
-   isMobile: boolean;
+   isMobile?: any;
 }
 
 export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps) => {
