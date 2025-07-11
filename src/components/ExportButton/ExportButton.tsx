@@ -1,5 +1,4 @@
 import { Log } from "@/types/Log";
-import { useEffect, useState } from "react";
 
 interface ExportButtonProps {
    logList: Log[];
@@ -7,16 +6,6 @@ interface ExportButtonProps {
 }
 
 export const ExportButton = ({ logList, resetsIndicators }: ExportButtonProps) => {
-   const [downloadLink, setDownloadLink] = useState("");
-
-   useEffect(() => {
-      createTxtLog();
-   }, [logList]);
-
-   function handleExport(){
-      resetsIndicators()
-   };
-
    function createLogIdentifier() {
       if (logList && logList.length > 0) {
          return logList[logList.length - 1].createdAt.replaceAll("/", "-");
@@ -32,7 +21,7 @@ export const ExportButton = ({ logList, resetsIndicators }: ExportButtonProps) =
                ? "\n"
                : `${log.createdAt} ----------------------------------------\n`;
 
-         let teste = log.skill
+         const teste = log.skill
             ? `${data}- ${log.skill} (${log.ability.toUpperCase()}) Check\n`
             : `${data}- ${log.ability.toUpperCase()} Saving Throw\n`;
 
@@ -42,21 +31,33 @@ export const ExportButton = ({ logList, resetsIndicators }: ExportButtonProps) =
       return formattedLog;
    }
 
-   function createTxtLog() {
-      const data = new Blob(formatLogExport(logList), { type: "text/plain" });
+   function handleExport() {
+      // 1. Cria o Blob e a URL para o download
+      const blob = new Blob(formatLogExport(logList), { type: "text/plain" });
+      const url = window.URL.createObjectURL(blob);
 
-      if (downloadLink !== "") window.URL.revokeObjectURL(downloadLink);
-      setDownloadLink(window.URL.createObjectURL(data));
+      // 2. Cria um elemento <a> temporário para iniciar o download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `DnDCheckLog_${createLogIdentifier()}`;
+
+      // 3. Adiciona, clica e remove o link <a> do DOM
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 4. Libera a memória revogando a URL do objeto
+      window.URL.revokeObjectURL(url);
+      resetsIndicators();
    }
 
    return (
-      <a 
-         href={downloadLink}
-         download={`DnDCheckLog_${createLogIdentifier()}`}
+      <button
          onClick={handleExport}
-         className={`btn btn-info ${createLogIdentifier().length === 0 && "btn-disabled disabled"} `}
+         className={`btn btn-info`}
+         disabled={logList.length === 0}
       >
          Exportar
-      </a>
+      </button>
    );
 };
