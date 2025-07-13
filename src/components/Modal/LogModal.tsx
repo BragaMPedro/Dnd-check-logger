@@ -9,7 +9,7 @@ interface LogModalProps {
 }
 
 export const LogModal = ({ setModal }: LogModalProps) => {
-   const { logs, postMultipleLogs, postIndicator } = useLocalStorageContext();
+   const { logs, setLogArray, setCurrentIndicator } = useLocalStorageContext();
    const isMobile = checkPlatform();
 
    function checkPlatform() {
@@ -32,8 +32,8 @@ export const LogModal = ({ setModal }: LogModalProps) => {
          return log;
       });
 
-      postIndicator(0);
-      postMultipleLogs(logsAtualizados);
+      setCurrentIndicator(0);
+      setLogArray(logsAtualizados);
    }
 
    return (

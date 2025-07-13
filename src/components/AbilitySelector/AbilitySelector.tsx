@@ -1,7 +1,7 @@
 "use client";
 
-import { getAbilityScoresById } from "@/services/dndApi";
-import { SelectedAbilityProps } from "@/types/AbilityScore";
+import { useCacheContext } from "@/contexts/CacheContext";
+import { AbilityScoreDetailsResponse, SelectedAbilityProps } from "@/types/AbilityScore";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 import { StatSelector } from "../StatSelector/StatSelector";
@@ -23,11 +23,11 @@ export const AbilitySelector = ({
 }: SkillSelectorProps) => {
    const [selectedAbility, setSelectedAbility] = useState<SelectedAbilityProps | undefined>();
    const [disableCheckbox, setDisableCheckbox] = useState<boolean>(false);
+   const { getCachedAbilityDetails } = useCacheContext();
 
    async function handleAbilitySelect(e: string) {
-      
       try {
-         const abilityRes = (await getAbilityScoresById(e)).data;
+         const abilityRes: AbilityScoreDetailsResponse = await getCachedAbilityDetails(e);
 
          let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
          setSelectedAbility(ability);
@@ -36,8 +36,8 @@ export const AbilitySelector = ({
          const skills = abilityRes.skills.map(skill => {
             return skill.name;
          });
-         
          setSkills(skills);
+         
       } catch (err) {
          console.log(err);
       }
