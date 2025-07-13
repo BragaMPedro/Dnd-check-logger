@@ -11,10 +11,13 @@ export const useLocalStorage = () => {
         const storedIndicator = localStorage.getItem("exportsFalse");
 
         if (storedLogs) {
-            setLogs(JSON.parse(storedLogs));
+            const storeLogsObject = JSON.parse(storedLogs);
+            (Array.isArray(storeLogsObject) && storeLogsObject.length > 0) && setLogs(storeLogsObject);
         }
+
         if (storedIndicator) {
-            setIndicator(JSON.parse(storedIndicator));
+            const storeIndicatorObject = JSON.parse(storedIndicator);
+            (typeof storeIndicatorObject === "number" && storeIndicatorObject > 0) && setIndicator(storeIndicatorObject);
         }
     }, []);
     
@@ -34,18 +37,18 @@ export const useLocalStorage = () => {
      * 
      * @param newLog 
      */
-    const postLog = (newLog: Log) => {
+    const setNewLog = (newLog: Log) => {
         setLogs([...logs, newLog]);
     };
 
     /**
      * Updates `logs` State
-     * Replaces entire log array with `newLogsArray`
+     * Replaces entire log array with `newLogArray`
      * 
-     * @param newLogsArray 
+     * @param newLogArray 
      */
-    const postMultipleLogs = (newLogsArray: Log[]) => {
-        setLogs(newLogsArray);
+    const setLogArray = (newLogArray: Log[]) => {
+        setLogs(newLogArray);
     };
 
     /**
@@ -65,16 +68,16 @@ export const useLocalStorage = () => {
      * 
      * @param newIndicator 
      */
-    const postIndicator = (newIndicator: number) => {
+    const setCurrentIndicator = (newIndicator: number) => {
         setIndicator(newIndicator);
     };
 
     return {
         logs,
         indicator,
-        postLog,
-        postMultipleLogs,
+        setNewLog,
+        setLogArray,
         deleteLog,
-        postIndicator,
+        setCurrentIndicator,
     };
 };
