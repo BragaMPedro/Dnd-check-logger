@@ -7,10 +7,10 @@ import { createContext, ReactNode, useContext } from "react";
 interface LocalStorageContextType {
     logs: Log[];
     indicator: number;
-    postLog: (newLog: Log) => void;
-    postMultipleLogs: (newLogsArray: Log[]) => void;
+    setNewLog: (newLog: Log) => void;
+    setLogArray: (newLogArray: Log[]) => void;
     deleteLog: (index: number) => void;
-    postIndicator: (newIndicator: number) => void;
+    setCurrentIndicator: (newIndicator: number) => void;
 }
 
 const LocalStorageContext = createContext<LocalStorageContextType | undefined>(undefined);

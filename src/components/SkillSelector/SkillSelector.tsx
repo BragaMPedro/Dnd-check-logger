@@ -1,7 +1,7 @@
 "use client";
 
-import { getSkillById } from "@/services/dndApi";
-import { SelectedAbilityProps } from "@/types/AbilityScore";
+import { useCacheContext } from "@/contexts/CacheContext";
+import { SelectedAbilityProps, SkillDetailsResponse } from "@/types/AbilityScore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 
@@ -13,21 +13,17 @@ interface SkillSelectorProps {
 
 export const SkillSelector = ({ skills, setIsSkillSelected, savingThrow }: SkillSelectorProps) => {
    const [selectedSkill, setSelectedSkill] = useState<SelectedAbilityProps | undefined>();
+   const { getCachedSkillDetails } = useCacheContext();
 
    useEffect(() => {
-      handleSavingThrowChange();
+      selectedSkill && handleSkillsReset()
 
-      return () => {
-         setIsSkillSelected(false);
-         setSelectedSkill(undefined);         
-      };
-   }, [savingThrow]);
+   }, [savingThrow, skills]);
 
-   function handleSavingThrowChange() {
-      if (savingThrow) {
-         setSelectedSkill(undefined);
-         setIsSkillSelected(false);
-      }
+   function handleSkillsReset(reason?:string) {
+      setSelectedSkill(undefined);
+      setIsSkillSelected(false);
+      reason && console.log("SkillSelectorReset: %s", reason);
    }
 
    async function handleSkillSelect(e: string) {
@@ -36,7 +32,7 @@ export const SkillSelector = ({ skills, setIsSkillSelected, savingThrow }: Skill
       try {
          const formattedSkill = e.toLowerCase().replaceAll(" ", "-");
 
-         const skillRes = (await getSkillById(formattedSkill)).data;
+         const skillRes: SkillDetailsResponse = await getCachedSkillDetails(formattedSkill);
          skill = { nome: skillRes.name, descricao: skillRes.desc };
 
          setSelectedSkill(skill);
@@ -56,7 +52,7 @@ export const SkillSelector = ({ skills, setIsSkillSelected, savingThrow }: Skill
             id="skill-selector"
             name="skill"
             required
-            defaultValue={""}
+            value={selectedSkill ? selectedSkill.nome : ""}
             className="select select-info w-full max-w-xs"
             onChange={e => handleSkillSelect(e.target.value)}>
             <option disabled></option>

@@ -3,13 +3,15 @@
 import { getAbilityScores } from "@/services/dndApi";
 import { FormEvent, useEffect, useState } from "react";
 
+import { AbilitySelector } from "@/components/AbilitySelector/AbilitySelector";
+import { LoadingScreen } from "@/components/LoadingScreen/LoadingScreen";
+import { LogModal } from "@/components/Modal/LogModal";
+import { SkillSelector } from "@/components/SkillSelector/SkillSelector";
 import { useLocalStorageContext } from "@/contexts/LocalStorageContext";
-import { AbilitySelector } from "../AbilitySelector/AbilitySelector";
-import { LoadingScreen } from "../LoadingScreen/LoadingScreen";
-import { LogModal } from "../Modal/LogModal";
-import { SkillSelector } from "../SkillSelector/SkillSelector";
 
 export const Form = () => {
+   const { indicator, setCurrentIndicator, setNewLog } = useLocalStorageContext();
+
    const [abilities, setAbilities] = useState<string[]>([]);
    const [skills, setSkills] = useState<string[]>([]);
    const [savingThrow, setSavingThrow] = useState<boolean>(false);
@@ -18,7 +20,6 @@ export const Form = () => {
    const [modalAberto, setModalAberto] = useState<boolean>(false);
    const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
-   const { indicator, postIndicator, postLog } = useLocalStorageContext();
 
    useEffect(() => {
       getDadosIniciais();
@@ -26,17 +27,16 @@ export const Form = () => {
 
    async function getDadosIniciais() {
       setLoading(true);
+      setTimeout(() => setLoading(false), 2200);
       try {
          const abilityArray = (await getAbilityScores()).data;
          let habilidades = abilityArray.results.map(stat => {
             return stat.name;
          });
-
          setAbilities(habilidades);
       } catch (error) {
          console.error(error);
-      }
-      setTimeout(() => setLoading(false), 2200);
+      }   
    }
 
    function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -57,8 +57,8 @@ export const Form = () => {
       };
 
       // Updates log and indicator states
-      postLog(novoLog);
-      postIndicator(indicator + 1);
+      setNewLog(novoLog);
+      setCurrentIndicator(indicator + 1);
    }
 
    if (loading) {
