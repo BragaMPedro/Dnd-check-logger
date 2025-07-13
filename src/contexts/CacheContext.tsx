@@ -21,11 +21,9 @@ export const CacheProvider = ({ children }: { children: ReactNode }) => {
     // Checa Cache e faz requisição se necessário
     const getCachedAbilityDetails = async (abilityIndex: string): Promise<AbilityScoreDetailsResponse> => {
         if (abilitiesCache.has(abilityIndex)) {
-            console.log(`CACHE HIT: '${abilityIndex}'`);
             return abilitiesCache.get(abilityIndex)!;
         }
 
-        console.log(`CACHE MISS: '${abilityIndex}'`);
         const { data } = await getAbilityScoresById(abilityIndex);
         
         // Atualiza o cache de forma imutável
@@ -37,11 +35,9 @@ export const CacheProvider = ({ children }: { children: ReactNode }) => {
     // Função para buscar detalhes de uma Perícia (com cache)
     const getCachedSkillDetails = async (skillIndex: string): Promise<SkillDetailsResponse> => {
         if (skillsCache.has(skillIndex)) {
-            console.log(`CACHE HIT: '${skillIndex}'`);
             return skillsCache.get(skillIndex)!;
         }
 
-        console.log(`CACHE MISS: '${skillIndex}'`);
         const { data } = await getSkillById(skillIndex);
 
         setSkillsCache(prevCache => new Map(prevCache).set(skillIndex, data));

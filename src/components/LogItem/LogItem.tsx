@@ -1,32 +1,32 @@
 import { useLocalStorageContext } from "@/contexts/LocalStorageContext";
-import { useLongPress } from "@/hooks/useLongPress";
 import { Log } from "@/types/Log";
 import { Construction, Menu } from "lucide-react";
-import { useState } from "react";
 
 interface LogItemProps {
    index: number;
    log: Log;
    logs: Log[];
-   btnAction?: () => void;
    isMobile?: any;
 }
-
-export const LogItem = ({ index, log, logs, btnAction, isMobile }: LogItemProps) => {
-   const [longPress, setLongPress] = useState<boolean>(false);
+/**
+ * @todo Update mobile logic
+ * @todo Convert `logs` to LinkedList?
+ */
+export const LogItem = ({ index, log, logs, isMobile }: LogItemProps) => {
    const { deleteLog } = useLocalStorageContext();
-   let mostrecent;
 
-   const onLongPress = (e: any) => {
-      console.log("onLongPress triggered", e);
-      setLongPress(state => !state);
-   };
-
-   const onClick = (e: any) => {
-      console.log("onClick triggered", e);
-   };
-
-   const longPressEvent = useLongPress({ onLongPress, onClick, options: { shouldPreventDefault: true, delay: 500 } });
+   /**
+    * LongPressLogic for Mobile
+    */ 
+   // const [longPress, setLongPress] = useState<boolean>(false);
+   // const onLongPress = (e: any) => {
+   //    console.log("onLongPress triggered", e);
+   //    setLongPress(state => !state);
+   // };
+   // const onClick = (e: any) => {
+   //    console.log("onClick triggered", e);
+   // };
+   // const longPressEvent = useLongPress({ onLongPress, onClick, options: { shouldPreventDefault: true, delay: 500 } });
 
    function handleDelete() {
       const del = confirm(
