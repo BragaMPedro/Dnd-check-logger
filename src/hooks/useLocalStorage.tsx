@@ -8,16 +8,16 @@ export const useLocalStorage = () => {
     //Initial Logs and Indicator values
     useEffect(() => {
         const storedLogs = localStorage.getItem("logArray");
-        const storedIndicator = localStorage.getItem("exportsFalse");
 
         if (storedLogs) {
             const storeLogsObject = JSON.parse(storedLogs);
-            (Array.isArray(storeLogsObject) && storeLogsObject.length > 0) && setLogs(storeLogsObject);
-        }
 
-        if (storedIndicator) {
-            const storeIndicatorObject = JSON.parse(storedIndicator);
-            (typeof storeIndicatorObject === "number" && storeIndicatorObject > 0) && setIndicator(storeIndicatorObject);
+            if(Array.isArray(storeLogsObject) && storeLogsObject.length > 0){
+                setLogs(storeLogsObject);
+                storeLogsObject.forEach((log: Log) => {
+                    log.exported && setIndicator(prevIndicator => prevIndicator + 1);
+                });
+            }
         }
     }, []);
     
