@@ -2,7 +2,7 @@
 
 import { useCacheContext } from "@/contexts/CacheContext";
 import { SelectedAbilityProps, SkillDetailsResponse } from "@/types/AbilityScore";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 
 interface SkillSelectorProps {
@@ -16,31 +16,34 @@ export const SkillSelector = ({ skills, setIsSkillSelected, savingThrow }: Skill
    const { getCachedSkillDetails } = useCacheContext();
 
    useEffect(() => {
-      selectedSkill && handleSkillsReset()
-
+      return selectedSkill && handleSkillsReset()
    }, [savingThrow, skills]);
 
-   function handleSkillsReset(reason?:string) {
+   function handleSkillsReset(reason?: string) {
       setSelectedSkill(undefined);
       setIsSkillSelected(false);
       reason && console.log("SkillSelectorReset: %s", reason);
    }
 
-   async function handleSkillSelect(e: string) {
-      let skill;
+   const handleSkillSelect = useCallback(
+      async (e: string) => {
+         try {
+            const formattedSkill = e.toLowerCase().replaceAll(" ", "-");
+            const skillRes: SkillDetailsResponse = await getCachedSkillDetails(formattedSkill);
+            const skill = { nome: skillRes.name, descricao: skillRes.desc };
 
-      try {
-         const formattedSkill = e.toLowerCase().replaceAll(" ", "-");
+            setSelectedSkill(skill);
+            setIsSkillSelected(true);
+         } catch (err) {
+            console.log(err);
+         }
+      },
+      [getCachedSkillDetails, setIsSkillSelected]
+   );
 
-         const skillRes: SkillDetailsResponse = await getCachedSkillDetails(formattedSkill);
-         skill = { nome: skillRes.name, descricao: skillRes.desc };
-
-         setSelectedSkill(skill);
-         setIsSkillSelected(true);
-      } catch (err) {
-         console.log(err);
-      }
-   }
+   const skillOptions = useMemo(() => {
+      return skills.map((skill, index) => <option key={index}>{skill}</option>);
+   }, [skills]);
 
    return (
       <section id="skill" className="space-y-8">
@@ -56,9 +59,7 @@ export const SkillSelector = ({ skills, setIsSkillSelected, savingThrow }: Skill
             className="select select-info w-full max-w-xs"
             onChange={e => handleSkillSelect(e.target.value)}>
             <option disabled></option>
-            {skills.map((skill, index) => {
-               return <option key={index}>{skill}</option>;
-            })}
+            {skillOptions}
          </select>
          {selectedSkill && <DescricaoColapsable content={selectedSkill} />}
       </section>

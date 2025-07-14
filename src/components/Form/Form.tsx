@@ -18,7 +18,6 @@ export const Form = () => {
 
    const [loading, setLoading] = useState<boolean>(false);
    const [modalAberto, setModalAberto] = useState<boolean>(false);
-   const [isAbilitySelected, setIsAbilitySelected] = useState<boolean>(false);
    const [isSkillSelected, setIsSkillSelected] = useState<boolean>(false);
 
    useEffect(() => {
@@ -76,7 +75,6 @@ export const Form = () => {
                   savingThrow={savingThrow}
                   setSkills={setSkills}
                   setSavingThrow={setSavingThrow}
-                  setIsAbilitySelected={setIsAbilitySelected}
                />
                <div className="divider"></div>
                {!savingThrow && skills.length > 0 && (
@@ -101,15 +99,9 @@ export const Form = () => {
                         Ver Log
                      </button>
                   </div>
-                  {!savingThrow ? (
-                     <button type="submit" disabled={!isSkillSelected} className="btn btn-accent px-6">
+                     <button type="submit" disabled={!savingThrow && (!isSkillSelected)} className="btn btn-accent px-6">
                         Salvar
                      </button>
-                  ) : (
-                     <button type="submit" disabled={!isAbilitySelected} className="btn btn-accent px-6">
-                        Salvar
-                     </button>
-                  )}
                </div>
             </form>
          </>

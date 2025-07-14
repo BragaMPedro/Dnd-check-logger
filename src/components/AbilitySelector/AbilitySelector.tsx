@@ -2,7 +2,7 @@
 
 import { useCacheContext } from "@/contexts/CacheContext";
 import { AbilityScoreDetailsResponse, SelectedAbilityProps } from "@/types/AbilityScore";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from "react";
 import { DescricaoColapsable } from "../Descricao/DescricaoColapsable";
 import { StatSelector } from "../StatSelector/StatSelector";
 
@@ -10,13 +10,11 @@ interface SkillSelectorProps {
    abilities: string[];
    savingThrow: boolean;
    setSavingThrow: Dispatch<SetStateAction<boolean>>;
-   setIsAbilitySelected: Dispatch<SetStateAction<boolean>>;
    setSkills: Dispatch<SetStateAction<string[]>>;
 }
 
 export const AbilitySelector = ({
    abilities,
-   setIsAbilitySelected,
    savingThrow,
    setSavingThrow,
    setSkills,
@@ -25,25 +23,30 @@ export const AbilitySelector = ({
    const [disableCheckbox, setDisableCheckbox] = useState<boolean>(false);
    const { getCachedAbilityDetails } = useCacheContext();
 
-   async function handleAbilitySelect(e: string) {
-      try {
-         const abilityRes: AbilityScoreDetailsResponse = await getCachedAbilityDetails(e);
+   /**
+    * Handles the selection of an ability score.
+    * Fetches ability details, updates selected ability state, sets skills, and manages saving throw checkbox.
+    * @param {string} e - value selected in the ability-selector input
+    */
+   const handleAbilitySelect = useCallback(
+      async (e: string) => {     
+         try {
+            const abilityRes: AbilityScoreDetailsResponse = await getCachedAbilityDetails(e);
+            let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
+            setSelectedAbility(ability);
 
-         let ability = { nome: abilityRes.full_name, descricao: abilityRes.desc };
-         setSelectedAbility(ability);
-         setIsAbilitySelected(true);
-         
-         const skills = abilityRes.skills.map(skill => {
-            return skill.name;
-         });
-         setSkills(skills);
-         
-      } catch (err) {
-         console.log(err);
-      }
+            const skills = abilityRes.skills.map(skill => skill.name);
+            setSkills(skills);
+         } catch (err) {
+            console.log(err);
+         }
 
-      e === "con" ? (setSavingThrow(true), setDisableCheckbox(true)) : setDisableCheckbox(false);
-   }
+         const isCon = e === "con"
+         setSavingThrow(isCon)
+         setDisableCheckbox(isCon)
+      },
+      [getCachedAbilityDetails, setSavingThrow, setSkills]
+   );
 
    function handleSavingThrowSwitch(e: ChangeEvent<HTMLInputElement>) {
       setSavingThrow(state => !state);
